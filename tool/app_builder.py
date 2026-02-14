@@ -161,8 +161,10 @@ def parse_args() -> argparse.Namespace:
 
 
 def load_requirements(args: argparse.Namespace) -> str:
-    if args.requirements:
+    if args.requirements is not None:
         return args.requirements.strip()
+    if args.requirements_file is None:
+        raise ValueError("Either --requirements or --requirements-file must be provided.")
     return Path(args.requirements_file).read_text(encoding="utf-8").strip()
 
 
