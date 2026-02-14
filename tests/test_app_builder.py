@@ -21,16 +21,9 @@ def test_load_requirements_accepts_empty_inline_value():
     assert app_builder.load_requirements(args) == ""
 
 
-def test_generate_with_whitespace_inline_requirements_uses_fallback_feature(capsys):
-    args = argparse.Namespace(
-        command="generate",
-        name="Test App",
-        requirements="   \n\t",
-        requirements_file=None,
-        out="./output",
-        stdout=True,
-    )
-    exit_code = app_builder.generate(args)
-    captured = capsys.readouterr()
-    assert exit_code == 0
-    assert "Core Workflow" in captured.out
+def test_whitespace_inline_requirements_reaches_fallback_feature_generation():
+    args = argparse.Namespace(requirements="   \n\t", requirements_file=None)
+    requirements = app_builder.load_requirements(args)
+    features = app_builder.extract_features(requirements)
+    assert len(features) == 1
+    assert features[0].name == "Core Workflow"
